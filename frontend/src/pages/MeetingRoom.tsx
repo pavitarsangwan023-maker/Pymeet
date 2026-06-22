@@ -18,7 +18,7 @@ export function MeetingRoom() {
   const { meetingId = "" } = useParams();
   const navigate = useNavigate();
   const { token, user } = useAuth();
-  const socket = useSocket(token);
+  const socket = useSocket(joinConfig ? token : null);
   const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEnded, setIsEnded] = useState(false);
@@ -142,7 +142,13 @@ export function MeetingRoom() {
     };
   }, [meetingId, navigate, socket]);
 
-  const localParticipant = useMemo<RoomParticipant | undefined>(() => participants.find((p) => p.id === user?.id) || (user ? { sid: socket?.id || "local", id: user.id, name: user.name, email: user.email, avatar_color: user.avatar_color, profile_pic: user.profile_pic, is_host: meeting?.host.id === user.id } : undefined), [meeting?.host.id, participants, socket?.id, user]);
+  const localParticipant = useMemo<RoomParticipant | undefined>(() => {
+    const remote = participants.find((p) => p.id === user?.id);
+    if (remote) {
+      return { ...remote, profile_pic: user?.profile_pic || remote.profile_pic };
+    }
+    return user ? { sid: socket?.id || "local", id: user.id, name: user.name, email: user.email, avatar_color: user.avatar_color, profile_pic: user.profile_pic, is_host: meeting?.host.id === user.id } : undefined;
+  }, [meeting?.host.id, participants, socket?.id, user]);
 
   const allParticipants = useMemo(() => {
     if (localParticipant && !participants.some((p) => p.sid === localParticipant.sid)) {
