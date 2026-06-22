@@ -22,6 +22,7 @@ class UserProfileUpdate(BaseModel):
     name: str | None = Field(None, min_length=2, max_length=120)
     email: EmailStr | None = None
     password: str | None = Field(None, min_length=8, max_length=128)
+    profile_pic: str | None = None
 
 
 class UserOut(BaseModel):
@@ -29,6 +30,7 @@ class UserOut(BaseModel):
     name: str
     email: EmailStr
     avatar_color: str
+    profile_pic: str | None = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

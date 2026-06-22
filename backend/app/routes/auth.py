@@ -42,4 +42,4 @@ def me(current_user: User = Depends(get_current_user)):
 
 @router.put("/profile", response_model=UserOut)
 def update_profile(payload: UserProfileUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    return update_user_profile(db, current_user, name=payload.name, email=payload.email, password=payload.password)
+    return update_user_profile(db, current_user, name=payload.name, email=payload.email, password=payload.password, profile_pic=payload.profile_pic)

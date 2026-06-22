@@ -11,7 +11,15 @@ from app.websocket.signaling import sio
 
 Base.metadata.create_all(bind=engine)
 
+from sqlalchemy import text
 from app.utils.rate_limit import limiter
+
+# Safely add new columns to existing tables
+try:
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_pic VARCHAR;"))
+except Exception as e:
+    print(f"Error updating schema: {e}")
 
 fastapi_app = FastAPI(title=settings.app_name, version="1.0.0")
 fastapi_app.state.limiter = limiter

@@ -37,7 +37,7 @@ def register_user(db: Session, payload: UserCreate) -> User:
     return user
 
 
-def update_user_profile(db: Session, user: User, name: str | None = None, email: str | None = None, password: str | None = None) -> User:
+def update_user_profile(db: Session, user: User, name: str | None = None, email: str | None = None, password: str | None = None, profile_pic: str | None = None) -> User:
     if email and email.lower() != user.email:
         if get_user_by_email(db, email):
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email is already registered")
@@ -49,6 +49,9 @@ def update_user_profile(db: Session, user: User, name: str | None = None, email:
         
     if password:
         user.hashed_password = hash_password(password)
+        
+    if profile_pic is not None:
+        user.profile_pic = profile_pic
         
     try:
         db.commit()

@@ -13,6 +13,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     avatar_color: Mapped[str] = mapped_column(String(20), default="#4f46e5")
+    profile_pic: Mapped[str] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     hosted_meetings = relationship("Meeting", back_populates="host", cascade="all, delete-orphan")

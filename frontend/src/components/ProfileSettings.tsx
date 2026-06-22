@@ -4,7 +4,7 @@ import { authApi } from "../services/api";
 import type { User as UserType } from "../types";
 
 interface ProfileSettingsProps {
-  user: { name: string; email: string };
+  user: UserType;
   onClose: () => void;
   onUpdate: (user: UserType) => void;
 }
@@ -14,6 +14,9 @@ export function ProfileSettings({ user, onClose, onUpdate }: ProfileSettingsProp
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [profilePic, setProfilePic] = useState(user.profile_pic || "");
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [avatarOptions, setAvatarOptions] = useState<string[]>([]);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +38,7 @@ export function ProfileSettings({ user, onClose, onUpdate }: ProfileSettingsProp
       if (name.trim() !== user.name) payload.name = name.trim();
       if (email.trim() !== user.email) payload.email = email.trim();
       if (password) payload.password = password;
+      if (profilePic !== (user.profile_pic || "")) payload.profile_pic = profilePic;
 
       if (Object.keys(payload).length === 0) {
         setError("No changes to save.");
@@ -80,6 +84,48 @@ export function ProfileSettings({ user, onClose, onUpdate }: ProfileSettingsProp
               Profile updated successfully!
             </div>
           )}
+
+          <div className="mb-6 flex flex-col items-center">
+            <div className="relative group">
+              {profilePic ? (
+                <img src={profilePic} alt="Avatar" className="w-24 h-24 rounded-full object-cover shadow-lg border-2 border-line bg-white" />
+              ) : (
+                <div className="w-24 h-24 rounded-full flex items-center justify-center font-bold text-3xl shadow-lg border-2 border-line" style={{ backgroundColor: user.avatar_color || "#2563eb", color: "white" }}>
+                  {user.name[0].toUpperCase()}
+                </div>
+              )}
+              <button 
+                type="button" 
+                onClick={() => {
+                  const options = Array.from({ length: 6 }).map((_, i) => `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}${i}${Date.now()}`);
+                  setAvatarOptions(options);
+                  setShowAvatarPicker(true);
+                }} 
+                className="absolute bottom-0 right-0 p-1.5 bg-cyan-400 text-slate-950 rounded-full shadow-lg hover:bg-cyan-300 transition-colors"
+              >
+                <User size={14} />
+              </button>
+            </div>
+            
+            {showAvatarPicker && (
+              <div className="mt-4 w-full p-3 rounded-xl border border-line bg-slate-950/50">
+                <p className="text-xs text-slate-400 text-center mb-2">Choose an Avatar</p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <button type="button" onClick={() => { setProfilePic(""); setShowAvatarPicker(false); }} className="w-12 h-12 rounded-full flex items-center justify-center bg-slate-800 text-xs border border-line hover:border-cyan-400 transition">None</button>
+                  {avatarOptions.map((opt, i) => (
+                    <button key={i} type="button" onClick={() => { setProfilePic(opt); setShowAvatarPicker(false); }} className="w-12 h-12 rounded-full border-2 border-transparent hover:border-cyan-400 transition bg-white overflow-hidden">
+                      <img src={opt} alt="Option" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-2 text-center">
+                  <button type="button" onClick={() => {
+                    setAvatarOptions(Array.from({ length: 6 }).map((_, i) => `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}${i}${Date.now()}`));
+                  }} className="text-xs text-cyan-400 hover:underline">Shuffle</button>
+                </div>
+              </div>
+            )}
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1">

@@ -25,6 +25,24 @@ export const Avatar = memo(function Avatar({ user, size = "md", className = "" }
 
   const color = user?.avatar_color || "#2563eb"; // default blue
 
+  if (user?.profile_pic) {
+    return (
+      <img
+        src={user.profile_pic}
+        alt={name}
+        title={name}
+        className={`shrink-0 rounded-full object-cover shadow-sm ${sizeClasses[size]} ${className}`}
+        onError={(e) => {
+          // Fallback to initials if image fails to load
+          e.currentTarget.style.display = 'none';
+          if (e.currentTarget.nextElementSibling) {
+            (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <div
       className={`flex items-center justify-center shrink-0 rounded-full font-bold text-white shadow-sm ${sizeClasses[size]} ${className}`}

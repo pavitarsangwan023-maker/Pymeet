@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   avatar_color: string;
+  profile_pic?: string | null;
   created_at: string;
 }
 
@@ -35,6 +36,7 @@ export interface RoomParticipant {
   name: string;
   email: string;
   avatar_color: string;
+  profile_pic?: string | null;
   is_host: boolean;
   is_co_host?: boolean;
   is_waiting?: boolean;

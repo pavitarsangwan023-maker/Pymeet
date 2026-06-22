@@ -109,10 +109,16 @@ export function Navbar() {
                   onClick={() => setShowProfileMenu(!showProfileMenu)} 
                   className="flex items-center gap-2 rounded-full border border-line bg-slate-100 dark:bg-white/5 p-1 pr-3 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/10 transition-all focus:ring-2 focus:ring-cyan-500 focus:outline-none"
                 >
-                  <span className="grid h-8 w-8 place-items-center rounded-full text-sm font-bold shadow-sm relative" style={{ background: user.avatar_color }}>
-                    {user.name[0]}
+                  <div className="relative h-8 w-8">
+                    {user.profile_pic ? (
+                      <img src={user.profile_pic} alt="Avatar" className="h-full w-full rounded-full object-cover shadow-sm bg-white" />
+                    ) : (
+                      <span className="grid h-full w-full place-items-center rounded-full text-sm font-bold shadow-sm" style={{ background: user.avatar_color }}>
+                        {user.name[0].toUpperCase()}
+                      </span>
+                    )}
                     <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-ink"></span>
-                  </span>
+                  </div>
                   <span className="hidden text-sm font-medium sm:block max-w-[100px] truncate">{user.name}</span>
                   <ChevronDown size={14} className={`text-slate-500 dark:text-slate-400 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
                 </button>
@@ -120,10 +126,16 @@ export function Navbar() {
                 {showProfileMenu && (
                   <div className="absolute right-0 mt-2 w-72 rounded-2xl border border-line bg-white dark:bg-slate-900 shadow-2xl py-2 z-50 animate-in fade-in slide-in-from-top-2">
                     <div className="px-4 py-3 border-b border-line mb-2 flex items-start gap-3">
-                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full text-xl font-bold shadow-sm relative" style={{ background: user.avatar_color, color: "#fff" }}>
-                        {user.name[0]}
+                      <div className="relative h-12 w-12 shrink-0">
+                        {user.profile_pic ? (
+                          <img src={user.profile_pic} alt="Avatar" className="h-full w-full rounded-full object-cover shadow-sm bg-white" />
+                        ) : (
+                          <span className="grid h-full w-full place-items-center rounded-full text-xl font-bold shadow-sm" style={{ background: user.avatar_color, color: "#fff" }}>
+                            {user.name[0].toUpperCase()}
+                          </span>
+                        )}
                         <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-slate-900"></span>
-                      </span>
+                      </div>
                       <div className="overflow-hidden">
                         <p className="font-bold text-slate-900 dark:text-white truncate text-base">{user.name}</p>
                         <p className="text-sm text-slate-500 dark:text-slate-400 truncate">{user.email}</p>
