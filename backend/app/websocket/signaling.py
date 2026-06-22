@@ -42,6 +42,7 @@ class RoomUser:
     name: str
     email: str
     avatar_color: str
+    profile_pic: str | None = None
     is_host: bool
     is_co_host: bool = False
     is_waiting: bool = False
@@ -92,7 +93,7 @@ async def connect(sid: str, environ: dict[str, Any], auth: dict[str, Any] | None
     user = await asyncio.to_thread(_sync_get_user, (auth or {}).get("token"))
     if not user:
         raise ConnectionRefusedError("Authentication required")
-    sid_to_user[sid] = RoomUser(sid=sid, id=user.id, name=user.name, email=user.email, avatar_color=user.avatar_color, is_host=False, is_co_host=False)
+    sid_to_user[sid] = RoomUser(sid=sid, id=user.id, name=user.name, email=user.email, avatar_color=user.avatar_color, profile_pic=user.profile_pic, is_host=False, is_co_host=False)
     await sio.emit("connected", {"sid": sid}, to=sid)
 
 
