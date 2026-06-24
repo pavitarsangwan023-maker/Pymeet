@@ -8,6 +8,7 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "icon.svg"],
       manifest: {
         name: "Pymeet Workplace",
         short_name: "Pymeet",
@@ -15,21 +16,23 @@ export default defineConfig({
         theme_color: "#0a0f1f",
         background_color: "#0a0f1f",
         display: "standalone",
+        start_url: "/",
         icons: [
           {
-            src: "/icon.svg",
-            sizes: "any",
-            type: "image/svg+xml"
-          },
-          {
-            src: "/icon.svg",
+            src: "/pwa-192x192.png",
             sizes: "192x192",
-            type: "image/svg+xml"
+            type: "image/png"
           },
           {
-            src: "/icon.svg",
+            src: "/pwa-512x512.png",
             sizes: "512x512",
-            type: "image/svg+xml"
+            type: "image/png"
+          },
+          {
+            src: "/pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
           }
         ]
       },
