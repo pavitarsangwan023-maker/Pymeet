@@ -13,6 +13,7 @@ export function Dashboard() {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [showNotes, setShowNotes] = useState(false);
   const [notesText, setNotesText] = useState(localStorage.getItem('pymeet_notes') || '');
+  const [saveText, setSaveText] = useState("Save Notes");
 
   useEffect(() => {
     localStorage.setItem('pymeet_notes', notesText);
@@ -175,11 +176,24 @@ export function Dashboard() {
             </div>
             <textarea 
               value={notesText}
-              onChange={(e) => setNotesText(e.target.value)}
+              onChange={(e) => { setNotesText(e.target.value); setSaveText("Save Notes"); }}
               placeholder="Type here if desired..."
-              className="w-full flex-1 min-h-[300px] resize-none outline-none bg-transparent text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              className="w-full flex-1 min-h-[250px] resize-none outline-none bg-transparent text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
               autoFocus
             />
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <span className="text-xs text-slate-400 dark:text-slate-500">Auto-saved locally</span>
+              <Button 
+                onClick={() => {
+                  localStorage.setItem('pymeet_notes', notesText);
+                  setSaveText("Saved! ✓");
+                  setTimeout(() => setShowNotes(false), 800);
+                }} 
+                className="px-5 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all"
+              >
+                {saveText}
+              </Button>
+            </div>
           </div>
         </div>
       )}
