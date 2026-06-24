@@ -6,11 +6,21 @@ import { useState, useEffect, useRef } from "react";
 import { ProfileSettings } from "./ProfileSettings";
 import { meetingApi } from "../services/api";
 import type { Meeting } from "../types";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 export function Navbar() {
   const { user, logout, setUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const { needRefresh: [needRefresh, setNeedRefresh], updateServiceWorker } = useRegisterSW({
+    onRegistered(r) {
+      if (r) {
+        setInterval(() => {
+          r.update();
+        }, 60 * 60 * 1000); // Check for updates every hour
+      }
+    }
+  });
   const [showSettings, setShowSettings] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -189,6 +199,20 @@ export function Navbar() {
                     <div className="my-1 border-t border-line"></div>
                     
                     <div className="px-2 py-1 space-y-1">
+                      <button 
+                        onClick={() => {
+                          if (needRefresh) {
+                            updateServiceWorker(true);
+                          } else {
+                            // Manual check via window reload if not using PWA SW directly
+                            window.location.reload();
+                          }
+                        }}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors"
+                      >
+                        <span className="flex items-center gap-3"><Settings size={16} /> Check for updates</span>
+                        {needRefresh && <span className="h-2 w-2 rounded-full bg-rose-500"></span>}
+                      </button>
                       <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white rounded-lg transition-colors">
                         <UserIcon size={16} /> Profile
                       </button>
