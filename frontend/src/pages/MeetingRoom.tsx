@@ -18,6 +18,7 @@ export function MeetingRoom() {
   const { meetingId = "" } = useParams();
   const navigate = useNavigate();
   const { token, user } = useAuth();
+  const [joinConfig, setJoinConfig] = useState<JoinConfig | null>(null);
   const socket = useSocket(joinConfig ? token : null);
   const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +36,6 @@ export function MeetingRoom() {
   const [recordingState, setRecordingState] = useState<"idle" | "requesting" | "approved" | "recording">("idle");
   const [recordingRequests, setRecordingRequests] = useState<{ sid: string; userName: string }[]>([]);
   const [coHostActionRequests, setCoHostActionRequests] = useState<{ sid: string; action: string; target_sid: string; target_name: string; co_host_name: string; co_host_sid: string; meetingId: string; }[]>([]);
-  const [joinConfig, setJoinConfig] = useState<JoinConfig | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const { localStream, remoteStreams, participants, micEnabled, cameraEnabled, screenSharing, toggleMic, toggleCamera, shareScreen, leave } = useWebRTC(socket, meetingId, Boolean(meeting) && Boolean(joinConfig), joinConfig);

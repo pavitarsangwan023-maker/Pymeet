@@ -115,7 +115,7 @@ export function MeetingControls({ localStream, isHost, micEnabled, cameraEnabled
   
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30 flex justify-center pb-4 pt-16 bg-gradient-to-t from-white via-white/80 dark:from-slate-950 dark:via-slate-950/80 to-transparent pointer-events-none px-2">
-      <div className="pointer-events-auto flex flex-wrap justify-center items-center gap-1 sm:gap-2 rounded-[2rem] border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 p-2 px-3 shadow-2xl backdrop-blur-2xl max-w-full">
+      <div className="pointer-events-auto flex flex-nowrap overflow-x-auto hide-scrollbar justify-start sm:justify-center items-center gap-1 sm:gap-2 rounded-[2rem] border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 p-2 px-3 shadow-2xl backdrop-blur-2xl max-w-full w-full sm:w-auto">
         <div className="shrink-0"><MicButton enabled={micEnabled} stream={localStream} onToggle={onToggleMic} /></div>
         <div className="shrink-0"><ControlButton icon={cameraEnabled ? Video : VideoOff} label={cameraEnabled ? "Stop Video" : "Start Video"} danger={!cameraEnabled} onClick={onToggleCamera} /></div>
         
@@ -147,7 +147,7 @@ export function MeetingControls({ localStream, isHost, micEnabled, cameraEnabled
         <div className="shrink-0"><ControlButton icon={MessageSquare} label="Chat" badge={unreadChatCount} onClick={() => { onToggleChat(); setShowBgPicker(false); }} /></div>
         <div className="shrink-0"><ControlButton icon={Users} label="People" badge={isHost ? unreadParticipantsCount : 0} onClick={() => { onToggleParticipants(); setShowBgPicker(false); }} /></div>
         
-        <div className="h-10 w-px bg-slate-300 dark:bg-white/10 mx-1 sm:mx-2 shrink-0" />
+        <div className="h-8 sm:h-10 w-px bg-slate-300 dark:bg-white/10 mx-1 shrink-0" />
         
         <button onClick={onLeave} className="flex h-12 sm:h-14 items-center justify-center gap-2 rounded-[1.25rem] bg-rose-600 px-4 sm:px-6 font-semibold text-white transition hover:bg-rose-700 ml-1 sm:ml-2 shadow-lg shadow-rose-500/20 pointer-events-auto shrink-0">
           <PhoneOff size={20} />

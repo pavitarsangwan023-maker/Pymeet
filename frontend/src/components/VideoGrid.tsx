@@ -32,25 +32,63 @@ export const VideoGrid = memo(function VideoGrid({ localStream, localUser, remot
   // For 1-2 participants, make tiles larger and fill the screen better
   const sizeClass = total <= 2 ? "w-full max-w-7xl mx-auto" : "w-full";
 
+  const allStreams = [
+    { id: "local", stream: localStream, participant: localUser, isLocal: true, muted: true, cameraEnabled, active: total === 1, screen: screenSharing },
+    ...remoteStreams.map((s) => ({ id: s.sid, stream: s.stream, participant: s.participant, isLocal: false, muted: false, cameraEnabled: true, active: false, screen: false }))
+  ];
+
+  // Chunk for mobile (max 2 per page)
+  const mobilePages: (typeof allStreams)[] = [];
+  for (let i = 0; i < allStreams.length; i += 2) {
+    mobilePages.push(allStreams.slice(i, i + 2));
+  }
+
   return (
-    <div className={`grid h-full gap-2 p-1 ${gridClass} ${sizeClass} items-center content-center`}>
-      <VideoTile
-        stream={localStream}
-        participant={localUser}
-        isLocal
-        muted
-        cameraEnabled={cameraEnabled}
-        active={total === 1}
-        screen={screenSharing}
-      />
-      {remoteStreams.map((item) => (
-        <VideoTile
-          key={item.sid}
-          stream={item.stream}
-          participant={item.participant}
-          active={false}
-        />
-      ))}
-    </div>
+    <>
+      {/* Mobile Layout: Horizontal Swiper */}
+      <div className="flex sm:hidden overflow-x-auto snap-x snap-mandatory hide-scrollbar w-full h-full pb-20 pt-16">
+        {mobilePages.map((page, pageIdx) => (
+          <div key={`page-${pageIdx}`} className="min-w-full flex-shrink-0 snap-center flex flex-col gap-2 p-2 justify-center h-full">
+            {page.map((item) => (
+              <div key={item.id} className="w-full flex-1 min-h-0">
+                <VideoTile
+                  stream={item.stream}
+                  participant={item.participant}
+                  isLocal={item.isLocal}
+                  muted={item.muted}
+                  cameraEnabled={item.cameraEnabled}
+                  active={item.active}
+                  screen={item.screen}
+                />
+              </div>
+            ))}
+            {/* Pagination Dots */}
+            {mobilePages.length > 1 && (
+              <div className="absolute bottom-32 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
+                {mobilePages.map((_, dotIdx) => (
+                  <div key={dotIdx} className={`h-1.5 rounded-full ${pageIdx === dotIdx ? "w-4 bg-cyan-400" : "w-1.5 bg-white/30"}`} />
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Layout: Standard Grid */}
+      <div className={`hidden sm:grid h-full gap-2 p-1 ${gridClass} ${sizeClass} items-center content-center pt-16 pb-20`}>
+        {allStreams.map((item) => (
+          <VideoTile
+            key={item.id}
+            stream={item.stream}
+            participant={item.participant}
+            isLocal={item.isLocal}
+            muted={item.muted}
+            cameraEnabled={item.cameraEnabled}
+            active={item.active}
+            screen={item.screen}
+          />
+        ))}
+      </div>
+    </>
   );
 });

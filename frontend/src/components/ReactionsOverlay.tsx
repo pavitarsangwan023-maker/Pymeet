@@ -20,27 +20,27 @@ const ANIMATED_EMOJIS: Record<string, string> = {
 
 export function ReactionsOverlay({ reactions }: { reactions: Reaction[] }) {
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-[60] overflow-hidden">
       <AnimatePresence>
         {reactions.map((r) => (
           <motion.div
             key={r.id}
-            initial={{ opacity: 0, y: 50, scale: 0.5, x: "-50%" }}
+            initial={{ opacity: 0, y: 0, scale: 0.5, x: "-50%" }}
             animate={{
               opacity: [0, 1, 1, 0],
-              y: -400,
+              y: -500,
               scale: [0.5, 1.2, 1, 0.9],
             }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2.5, ease: "easeOut" }}
-            className="absolute bottom-0 text-5xl drop-shadow-lg flex flex-col items-center"
+            className="absolute bottom-28 sm:bottom-0 text-5xl drop-shadow-lg flex flex-col items-center"
             style={{ left: `${r.left}vw` }}
           >
             {ANIMATED_EMOJIS[r.emoji] ? (
               <img 
                 src={`https://fonts.gstatic.com/s/e/notoemoji/latest/${ANIMATED_EMOJIS[r.emoji]}/512.gif`} 
                 alt={r.emoji} 
-                className="w-16 h-16 drop-shadow-2xl" 
+                className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-2xl" 
               />
             ) : (
               r.emoji
