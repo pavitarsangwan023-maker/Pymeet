@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CalendarDays, Plus, Video, Share, PenLine, ChevronLeft, ChevronRight, MoreHorizontal, ChevronDown } from "lucide-react";
+import { CalendarDays, Plus, Video, Share, PenLine, ChevronLeft, ChevronRight, MoreHorizontal, ChevronDown, X, Minus, Square } from "lucide-react";
 import { Navbar } from "../components/Navbar";
 import { Button } from "../components/Button";
 import { useAuth } from "../context/AuthContext";
@@ -11,6 +11,12 @@ export function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [showNotes, setShowNotes] = useState(false);
+  const [notesText, setNotesText] = useState(localStorage.getItem('pymeet_notes') || '');
+
+  useEffect(() => {
+    localStorage.setItem('pymeet_notes', notesText);
+  }, [notesText]);
 
   useEffect(() => {
     meetingApi.list()
@@ -84,7 +90,7 @@ export function Dashboard() {
           
           {/* My notes */}
           <div className="flex justify-center">
-            <button className="flex flex-col items-center gap-2 group text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <button onClick={() => setShowNotes(true)} className="flex flex-col items-center gap-2 group text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
               <div className="h-12 w-12 rounded-[1rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-center group-hover:border-blue-500 group-hover:shadow-blue-500/10">
                 <PenLine size={20} />
               </div>
@@ -145,6 +151,39 @@ export function Dashboard() {
         </div>
 
       </main>
+
+      {/* Floating Notes Modal */}
+      {showNotes && (
+        <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col z-50 overflow-hidden animate-in slide-in-from-bottom-8">
+          {/* Header */}
+          <div className="flex items-center justify-between px-3 py-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
+            <div className="flex items-center gap-2">
+              <div className="bg-blue-600 text-white p-0.5 rounded-md"><Video size={12} /></div>
+              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">My notes</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-400">
+              <button className="hover:text-slate-700 dark:hover:text-slate-200 transition-colors"><Minus size={14} /></button>
+              <button className="hover:text-slate-700 dark:hover:text-slate-200 transition-colors"><Square size={12} /></button>
+              <button onClick={() => setShowNotes(false)} className="hover:text-slate-700 dark:hover:text-slate-200 transition-colors ml-1"><X size={16} /></button>
+            </div>
+          </div>
+          {/* Content */}
+          <div className="p-5 flex-1 flex flex-col">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-slate-900 dark:text-white text-[15px]">{user?.name}'s notes</h3>
+              <button className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"><MoreHorizontal size={18} /></button>
+            </div>
+            <textarea 
+              value={notesText}
+              onChange={(e) => setNotesText(e.target.value)}
+              placeholder="Type here if desired..."
+              className="w-full flex-1 min-h-[300px] resize-none outline-none bg-transparent text-sm text-slate-700 dark:text-slate-300 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              autoFocus
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
