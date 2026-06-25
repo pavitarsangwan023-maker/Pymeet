@@ -9,6 +9,7 @@ export function useVirtualBackground(
   backgroundSrc?: string // URL for image or video
 ) {
   const [outputStream, setOutputStream] = useState<MediaStream | null>(null);
+  const [isReady, setIsReady] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const segmentationRef = useRef<SelfieSegmentation | null>(null);
   
@@ -58,8 +59,11 @@ export function useVirtualBackground(
   useEffect(() => {
     if (!rawStream || backgroundType === "none") {
       setOutputStream(null);
+      setIsReady(false);
       return;
     }
+
+    setIsReady(false);
 
     const sourceVideoElement = document.createElement("video");
     sourceVideoElement.srcObject = rawStream;
@@ -82,6 +86,7 @@ export function useVirtualBackground(
     let isProcessing = false;
 
     segmentation.onResults((results) => {
+      if (!isReady) setIsReady(true);
       canvas.width = results.image.width;
       canvas.height = results.image.height;
       
@@ -216,6 +221,8 @@ export function useVirtualBackground(
             await segmentation.send({ image: sourceVideoElement });
           } catch (e) {
             console.error("Segmentation failed", e);
+            // If segmentation fails continuously, fallback to raw stream
+            if (isReady) setIsReady(false);
             isProcessing = false;
           }
         }
@@ -266,5 +273,5 @@ export function useVirtualBackground(
     };
   }, [rawStream, backgroundType, backgroundSrc]);
 
-  return outputStream;
+  return isReady ? outputStream : null;
 }

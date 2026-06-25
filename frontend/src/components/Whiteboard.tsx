@@ -183,17 +183,17 @@ export function Whiteboard({ socket, isHost, onClose }: WhiteboardProps) {
     <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-slate-900/90 backdrop-blur-xl p-4 sm:p-8 animate-in fade-in zoom-in-95 duration-300">
       
       {/* Top Toolbar */}
-      <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-slate-800/90 border border-slate-700 p-2 rounded-2xl shadow-2xl backdrop-blur-lg z-50">
-        <button onClick={() => setIsEraser(false)} className={`p-3 rounded-xl transition ${!isEraser ? "bg-cyan-500 text-slate-950" : "text-slate-300 hover:bg-slate-700"} flex items-center justify-center`} title="Pen">
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-1 sm:gap-2 bg-slate-800/90 border border-slate-700 p-1.5 sm:p-2 rounded-2xl shadow-2xl backdrop-blur-lg z-50 max-w-[95vw] overflow-x-auto overflow-y-hidden hide-scrollbar">
+        <button onClick={() => setIsEraser(false)} className={`shrink-0 p-2 sm:p-3 rounded-xl transition ${!isEraser ? "bg-cyan-500 text-slate-950" : "text-slate-300 hover:bg-slate-700"} flex items-center justify-center`} title="Pen">
           <Pen size={20} />
         </button>
         <button onClick={() => setIsEraser(true)} className={`p-3 rounded-xl transition ${isEraser ? "bg-amber-500 text-slate-950" : "text-slate-300 hover:bg-slate-700"} flex items-center justify-center`} title="Eraser">
           <Eraser size={20} />
         </button>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-6 sm:h-8 bg-slate-600 mx-0.5 sm:mx-1 shrink-0"></div>
 
-        <div className="flex gap-1.5 px-2">
+        <div className="flex gap-1.5 px-1 sm:px-2 shrink-0">
           {colors.map((c) => (
             <button
               key={c}
@@ -204,34 +204,34 @@ export function Whiteboard({ socket, isHost, onClose }: WhiteboardProps) {
           ))}
         </div>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-6 sm:h-8 bg-slate-600 mx-0.5 sm:mx-1 shrink-0"></div>
 
-        <div className="flex items-center gap-2 px-2 text-slate-300">
+        <div className="flex items-center gap-1 sm:gap-2 px-1 sm:px-2 text-slate-300 shrink-0">
           <button onClick={() => setSize(Math.max(1, size - 1))} className="hover:bg-slate-700 p-1.5 rounded-lg"><Minus size={16} /></button>
           <div className="w-4 text-center font-bold text-sm">{size}</div>
           <button onClick={() => setSize(Math.min(20, size + 1))} className="hover:bg-slate-700 p-1.5 rounded-lg"><Plus size={16} /></button>
         </div>
 
-        <div className="w-px h-8 bg-slate-600 mx-1"></div>
+        <div className="w-px h-6 sm:h-8 bg-slate-600 mx-0.5 sm:mx-1 shrink-0"></div>
 
-        <button onClick={() => { if(window.confirm("Clear board for everyone?")) clearBoard(true); }} className="p-3 rounded-xl text-rose-400 hover:bg-rose-500/20 transition flex items-center justify-center" title="Clear All">
+        <button onClick={() => { if(window.confirm("Clear board for everyone?")) clearBoard(true); }} className="shrink-0 p-2 sm:p-3 rounded-xl text-rose-400 hover:bg-rose-500/20 transition flex items-center justify-center" title="Clear All">
           <Trash2 size={20} />
         </button>
         
-        <button onClick={downloadCanvas} className="p-3 rounded-xl text-cyan-400 hover:bg-cyan-500/20 transition flex items-center justify-center" title="Save PNG">
+        <button onClick={downloadCanvas} className="shrink-0 p-2 sm:p-3 rounded-xl text-cyan-400 hover:bg-cyan-500/20 transition flex items-center justify-center" title="Save PNG">
           <Download size={20} />
         </button>
       </div>
 
       {/* Close Button */}
-      <button onClick={onClose} className="absolute top-6 right-6 p-3 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-rose-500 transition z-50 shadow-xl">
-        <X size={24} />
+      <button onClick={onClose} className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 sm:p-3 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:text-white hover:bg-rose-500 transition z-50 shadow-xl">
+        <X size={20} />
       </button>
 
       {/* Canvas Area */}
       <div 
         ref={containerRef} 
-        className="w-full h-full max-w-6xl max-h-[80vh] bg-[#0f172a] border-2 border-slate-700 rounded-3xl shadow-2xl overflow-hidden cursor-crosshair relative mt-16"
+        className="w-full h-full flex-1 bg-[#0f172a] border-2 border-slate-700 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden cursor-crosshair relative mt-14 sm:mt-16"
         style={{ touchAction: "none" }}
       >
         <canvas

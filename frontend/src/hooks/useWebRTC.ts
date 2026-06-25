@@ -111,12 +111,10 @@ export function useWebRTC(socket: Socket | null, meetingId: string, enabled: boo
 
         localStreamRef.current = stream;
         setLocalStream(stream);
-        socket.emit("join-room", { meetingId });
-        socket.emit("media-status-change", { micEnabled: joinConfig.micEnabled, cameraEnabled: joinConfig.cameraEnabled });
+        socket.emit("join-room", { meetingId, micEnabled: joinConfig.micEnabled, cameraEnabled: joinConfig.cameraEnabled });
       })
       .catch(() => {
-        socket.emit("join-room", { meetingId });
-        socket.emit("media-status-change", { micEnabled: joinConfig.micEnabled, cameraEnabled: joinConfig.cameraEnabled });
+        socket.emit("join-room", { meetingId, micEnabled: joinConfig.micEnabled, cameraEnabled: joinConfig.cameraEnabled });
       });
 
     return () => {

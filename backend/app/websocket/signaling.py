@@ -106,6 +106,8 @@ async def join_room(sid: str, data: dict[str, Any]):
 
     user = sid_to_user[sid]
     user.is_host = meeting.host_id == user.id
+    user.mic_enabled = data.get("micEnabled", True)
+    user.camera_enabled = data.get("cameraEnabled", True)
 
     if not meeting.started_at and user.is_host:
         db = SessionLocal()

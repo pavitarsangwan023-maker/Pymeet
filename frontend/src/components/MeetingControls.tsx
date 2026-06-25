@@ -93,15 +93,6 @@ export function MeetingControls({ localStream, isHost, micEnabled, cameraEnabled
   const [showBgPicker, setShowBgPicker] = useState(false);
   const emojis = ["👍", "❤️", "😂", "😮", "👏", "🎉"];
   
-  const ANIMATED_EMOJIS: Record<string, string> = {
-    "👍": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f44d/512.gif",
-    "❤️": "https://fonts.gstatic.com/s/e/notoemoji/latest/2764_fe0f/512.gif",
-    "😂": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.gif",
-    "😮": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f62e/512.gif",
-    "👏": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f44f/512.gif",
-    "🎉": "https://fonts.gstatic.com/s/e/notoemoji/latest/1f389/512.gif"
-  };
-  
   const backgrounds = [
     { type: "none", label: "None", src: "" },
     { type: "blur", label: "Blur", src: "" },
@@ -160,11 +151,7 @@ export function MeetingControls({ localStream, isHost, micEnabled, cameraEnabled
         <div className="pointer-events-auto absolute bottom-[100px] left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-3xl border border-line bg-slate-900/95 p-3 shadow-2xl backdrop-blur-xl z-50">
           {emojis.map((emoji) => (
             <button key={emoji} onClick={() => { onReact(emoji); setShowEmojiPicker(false); }} className="transform rounded-full p-2 transition hover:scale-125 hover:bg-white/10 active:scale-95 group">
-              {ANIMATED_EMOJIS[emoji] ? (
-                <img src={ANIMATED_EMOJIS[emoji]} alt={emoji} className="w-10 h-10 object-contain drop-shadow-md group-hover:drop-shadow-xl" />
-              ) : (
-                <span className="text-3xl">{emoji}</span>
-              )}
+              <span className="text-3xl sm:text-4xl drop-shadow-md group-hover:drop-shadow-xl">{emoji}</span>
             </button>
           ))}
           <div className="w-px h-10 bg-white/10 mx-1"></div>
