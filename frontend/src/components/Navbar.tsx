@@ -1,4 +1,4 @@
-import { LogOut, Settings, Video, CalendarDays, Home, Bell, ChevronDown, User as UserIcon } from "lucide-react";
+import { LogOut, Settings, Video, CalendarDays, Home, Bell, ChevronDown, User as UserIcon, Download } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -31,6 +31,26 @@ export function Navbar() {
   
   const [status, setStatus] = useState("Available");
   const [showStatusMenu, setShowStatusMenu] = useState(false);
+  const [installPrompt, setInstallPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    installPrompt.userChoice.then((choiceResult: any) => {
+      if (choiceResult.outcome === "accepted") {
+        setInstallPrompt(null);
+      }
+    });
+  };
 
   const statuses = [
     { label: "Available", color: "bg-green-500" },
@@ -84,6 +104,18 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
+          {installPrompt && (
+            <button 
+              onClick={handleInstallClick} 
+              className="flex items-center gap-1 sm:gap-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-bold text-slate-950 transition-colors shadow-sm animate-in fade-in"
+              title="Install App"
+            >
+              <Download size={16} />
+              <span className="hidden sm:inline">Install App</span>
+              <span className="sm:hidden">Install</span>
+            </button>
+          )}
+
           <button 
             onClick={toggleTheme} 
             className="rounded-full p-2 hover:bg-white/10 transition-all text-2xl drop-shadow-lg"
