@@ -103,13 +103,13 @@ export function useWebRTC(socket: Socket | null, meetingId: string, enabled: boo
       },
       video: joinConfig.videoDeviceId ? { 
         deviceId: { exact: joinConfig.videoDeviceId },
-        width: { ideal: 640 },
-        height: { ideal: 480 },
-        frameRate: { ideal: 24, max: 30 }
+        width: { ideal: 1280, max: 1920 },
+        height: { ideal: 720, max: 1080 },
+        frameRate: { ideal: 30, max: 60 }
       } : {
-        width: { ideal: 640 },
-        height: { ideal: 480 },
-        frameRate: { ideal: 24, max: 30 }
+        width: { ideal: 1280, max: 1920 },
+        height: { ideal: 720, max: 1080 },
+        frameRate: { ideal: 30, max: 60 }
       },
     };
 
