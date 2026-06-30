@@ -183,8 +183,26 @@ export function PreJoinScreen({ meetingTitle, isHost, onJoin }: PreJoinScreenPro
       
       try {
         const constraints: MediaStreamConstraints = {
-          audio: selectedAudioId ? { deviceId: { exact: selectedAudioId } } : true,
-          video: selectedVideoId ? { deviceId: { exact: selectedVideoId } } : true,
+          audio: selectedAudioId ? { 
+            deviceId: { exact: selectedAudioId },
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } : {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          },
+          video: selectedVideoId ? { 
+            deviceId: { exact: selectedVideoId },
+            width: { ideal: 1280, max: 1920 },
+            height: { ideal: 720, max: 1080 },
+            frameRate: { ideal: 30, max: 60 }
+          } : {
+            width: { ideal: 1280, max: 1920 },
+            height: { ideal: 720, max: 1080 },
+            frameRate: { ideal: 30, max: 60 }
+          },
         };
         
         // Always request both initially to get permissions, then we can toggle tracks
