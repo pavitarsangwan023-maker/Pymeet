@@ -6,12 +6,14 @@ interface VideoGridProps {
   localStream: MediaStream | null;
   localUser?: RoomParticipant;
   remoteStreams: Array<{ sid: string; stream: MediaStream; participant?: RoomParticipant }>;
+  participants: RoomParticipant[];
   cameraEnabled: boolean;
   screenSharing: boolean;
 }
 
-export const VideoGrid = memo(function VideoGrid({ localStream, localUser, remoteStreams, cameraEnabled, screenSharing }: VideoGridProps) {
-  const total = remoteStreams.length + 1;
+export const VideoGrid = memo(function VideoGrid({ localStream, localUser, remoteStreams, participants, cameraEnabled, screenSharing }: VideoGridProps) {
+  const remoteParticipants = participants.filter((p) => p.sid !== localUser?.sid);
+  const total = remoteParticipants.length + 1;
 
   // Zoom-like grid columns based on participant count
   let gridClass: string;
@@ -34,7 +36,19 @@ export const VideoGrid = memo(function VideoGrid({ localStream, localUser, remot
 
   const allStreams = [
     { id: "local", stream: localStream, participant: localUser, isLocal: true, muted: true, cameraEnabled, active: total === 1, screen: screenSharing },
-    ...remoteStreams.map((s) => ({ id: s.sid, stream: s.stream, participant: s.participant, isLocal: false, muted: false, cameraEnabled: true, active: false, screen: false }))
+    ...remoteParticipants.map((p) => {
+      const rs = remoteStreams.find((s) => s.sid === p.sid);
+      return { 
+        id: p.sid, 
+        stream: rs ? rs.stream : null, 
+        participant: p, 
+        isLocal: false, 
+        muted: !(p.mic_enabled ?? true), 
+        cameraEnabled: p.camera_enabled ?? true, 
+        active: false, 
+        screen: false 
+      };
+    })
   ];
 
   // Chunk for mobile (max 2 per page)

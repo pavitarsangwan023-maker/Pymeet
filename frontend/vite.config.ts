@@ -46,9 +46,9 @@ export default defineConfig({
     port: 5173,
     allowedHosts: true,
     proxy: {
-      "/api": "http://backend:8000",
+      "/api": "http://localhost:8000",
       "/socket.io": {
-        target: "http://backend:8000",
+        target: "http://localhost:8000",
         ws: true
       }
     }
@@ -58,9 +58,9 @@ export default defineConfig({
     port: 5173,
     allowedHosts: true,
     proxy: {
-      "/api": "http://backend:8000",
+      "/api": "http://localhost:8000",
       "/socket.io": {
-        target: "http://backend:8000",
+        target: "http://localhost:8000",
         ws: true
       }
     }

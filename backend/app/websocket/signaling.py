@@ -42,8 +42,8 @@ class RoomUser:
     name: str
     email: str
     avatar_color: str
-    profile_pic: str | None = None
     is_host: bool
+    profile_pic: str | None = None
     is_co_host: bool = False
     is_waiting: bool = False
     mic_enabled: bool = True
