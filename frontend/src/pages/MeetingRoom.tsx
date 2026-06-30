@@ -27,6 +27,7 @@ export function MeetingRoom() {
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const [waiting, setWaiting] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
+  const [showMeetingInfo, setShowMeetingInfo] = useState(false);
   const [waitingParticipants, setWaitingParticipants] = useState<RoomParticipant[]>([]);
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [chatEnabled, setChatEnabled] = useState(true);
@@ -185,12 +186,16 @@ export function MeetingRoom() {
   }, [participants, localParticipant]);
 
   const exit = () => { 
-    if (localParticipant?.is_host) {
-      socket?.emit("end-meeting", { meetingId });
-    }
     leave(); 
     setShowThankYou(true);
     setTimeout(() => navigate("/"), 5000);
+  };
+
+  const endMeetingForAll = () => {
+    if (localParticipant?.is_host) {
+      socket?.emit("end-meeting", { meetingId });
+    }
+    exit();
   };
 
   useEffect(() => {
@@ -416,18 +421,59 @@ export function MeetingRoom() {
         </div>
       )}
       <header className="fixed left-0 right-0 top-0 z-20 flex items-center justify-between border-b border-slate-200 dark:border-line bg-white/70 dark:bg-slate-950/70 px-4 py-3 backdrop-blur-xl transition-colors">
-        <div><h1 className="font-semibold text-slate-900 dark:text-white">{meeting?.title || "PyMeet Meeting"}</h1><p className="text-xs text-slate-500 dark:text-slate-400">{meetingId}</p></div>
+        <div className="relative">
+          <div className="flex items-center gap-2 cursor-pointer group select-none" onClick={() => setShowMeetingInfo(!showMeetingInfo)}>
+            <Shield size={18} className="text-green-500" />
+            <h1 className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+              {meeting?.title || "PyMeet Meeting"} 
+              <span className="text-slate-400 group-hover:text-slate-300 transition-colors">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+            </h1>
+          </div>
+          
+          {showMeetingInfo && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setShowMeetingInfo(false)} />
+              <div className="absolute top-full left-0 mt-3 w-[340px] rounded-2xl border border-slate-700 bg-slate-900/95 p-4 shadow-2xl backdrop-blur-xl z-20 animate-in fade-in slide-in-from-top-2">
+                <h3 className="text-sm font-bold text-white mb-4 border-b border-slate-800 pb-2">{meeting?.title || "PyMeet Meeting"}</h3>
+                
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Invite Link</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-cyan-400 truncate flex-1">{window.location.origin}/meeting/{meetingId}</span>
+                      <button onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/meeting/${meetingId}`); alert("Link copied!"); }} className="p-1.5 rounded-md hover:bg-slate-800 text-slate-300 transition" title="Copy Link">
+                        <Copy size={14} />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Meeting ID</span>
+                    <span className="text-sm text-slate-200 font-mono">{meetingId}</span>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Host</span>
+                    <span className="text-sm text-slate-200">{meeting?.host.name || "Unknown"} {localParticipant?.is_host ? "(You)" : ""}</span>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        
         {timeLeftStr && (
           <div className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-bold ${parseInt(timeLeftStr.split(":")[0]) < 5 ? "bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400" : "bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300"}`}>
             ⏱️ {timeLeftStr} left
           </div>
         )}
-        <button onClick={() => { navigator.clipboard.writeText(meetingId); alert("Meeting ID copied to clipboard!"); }} className="flex items-center gap-2 rounded-lg border border-slate-200 dark:border-line bg-slate-50 dark:bg-white/5 px-3 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10"><Copy size={16} /> Copy ID</button>
       </header>
       <section className="fixed inset-0 flex h-full w-full items-center justify-center p-4"><VideoGrid localStream={localStream} localUser={localParticipant} remoteStreams={remoteStreams} participants={allParticipants} cameraEnabled={cameraEnabled} screenSharing={screenSharing} /></section>
       <ReactionsOverlay reactions={reactions} />
       {activePanel === "whiteboard" && <Whiteboard socket={socket} isHost={localParticipant?.is_host ?? false} onClose={() => setActivePanel(null)} />}
-      <MeetingControls localStream={localStream} isHost={localParticipant?.is_host ?? false} micEnabled={micEnabled} cameraEnabled={cameraEnabled} screenSharing={screenSharing} recordingState={recordingState} unreadChatCount={unreadChatCount} unreadParticipantsCount={activePanel !== "participants" ? waitingParticipants.length : 0} showReactions={activePanel === "reactions"} onToggleMic={toggleMic} onToggleCamera={toggleCamera} onShareScreen={() => { setActivePanel(null); shareScreen(); }} onToggleRecord={handleRecordToggle} onToggleChat={() => togglePanel("chat")} onToggleParticipants={() => togglePanel("participants")} onToggleReactions={() => togglePanel("reactions")} onToggleWhiteboard={() => togglePanel("whiteboard")} onLeave={exit} onReact={handleReact} currentBgType={joinConfig?.backgroundType} currentBgSrc={joinConfig?.backgroundSrc} onUpdateBackground={updateBackground} />
+      <MeetingControls localStream={localStream} isHost={localParticipant?.is_host ?? false} micEnabled={micEnabled} cameraEnabled={cameraEnabled} screenSharing={screenSharing} recordingState={recordingState} unreadChatCount={unreadChatCount} unreadParticipantsCount={activePanel !== "participants" ? waitingParticipants.length : 0} showReactions={activePanel === "reactions"} onToggleMic={toggleMic} onToggleCamera={toggleCamera} onShareScreen={() => { setActivePanel(null); shareScreen(); }} onToggleRecord={handleRecordToggle} onToggleChat={() => togglePanel("chat")} onToggleParticipants={() => togglePanel("participants")} onToggleReactions={() => togglePanel("reactions")} onToggleWhiteboard={() => togglePanel("whiteboard")} onLeave={exit} onEndMeeting={endMeetingForAll} onReact={handleReact} currentBgType={joinConfig?.backgroundType} currentBgSrc={joinConfig?.backgroundSrc} onUpdateBackground={updateBackground} />
       <ChatPanel meetingId={meetingId} open={activePanel === "chat"} socket={socket} localUser={localParticipant} participants={allParticipants} chatEnabled={chatEnabled} onClose={() => setActivePanel(null)} onNewMessage={() => { if (activePanel !== "chat") setUnreadChatCount((c) => c + 1); }} />
       <ParticipantPanel open={activePanel === "participants"} participants={allParticipants} waitingParticipants={waitingParticipants} socket={socket} meetingId={meetingId} currentSid={socket?.id || "local"} onClose={() => setActivePanel(null)} localMicEnabled={micEnabled} localCameraEnabled={cameraEnabled} />
     </main>

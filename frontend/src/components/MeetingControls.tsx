@@ -88,7 +88,8 @@ function ControlButton({ icon: Icon, label, active, danger, onClick, badge, anim
   );
 }
 
-export function MeetingControls({ localStream, isHost, micEnabled, cameraEnabled, screenSharing, recordingState = "idle", unreadChatCount = 0, unreadParticipantsCount = 0, showReactions, onToggleMic, onToggleCamera, onShareScreen, onToggleRecord, onToggleChat, onToggleParticipants, onToggleReactions, onToggleWhiteboard, onLeave, onReact, currentBgType, currentBgSrc, onUpdateBackground }: any) {
+export function MeetingControls({ localStream, isHost, micEnabled, cameraEnabled, screenSharing, recordingState = "idle", unreadChatCount = 0, unreadParticipantsCount = 0, showReactions, onToggleMic, onToggleCamera, onShareScreen, onToggleRecord, onToggleChat, onToggleParticipants, onToggleReactions, onToggleWhiteboard, onLeave, onEndMeeting, onReact, currentBgType, currentBgSrc, onUpdateBackground }: any) {
+  const [showLeaveMenu, setShowLeaveMenu] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showBgPicker, setShowBgPicker] = useState(false);
   const emojis = ["👍", "❤️", "😂", "😮", "👏", "🎉"];
@@ -140,10 +141,38 @@ export function MeetingControls({ localStream, isHost, micEnabled, cameraEnabled
         
         <div className="h-8 sm:h-10 w-px bg-slate-300 dark:bg-white/10 mx-1 shrink-0" />
         
-        <button onClick={onLeave} className="flex h-12 sm:h-14 items-center justify-center gap-2 rounded-[1.25rem] bg-rose-600 px-4 sm:px-6 font-semibold text-white transition hover:bg-rose-700 ml-1 sm:ml-2 shadow-lg shadow-rose-500/20 pointer-events-auto shrink-0">
-          <PhoneOff size={20} />
-          Leave
-        </button>
+        <div className="relative shrink-0 flex items-center">
+          {showLeaveMenu && isHost && (
+            <div className="absolute bottom-[calc(100%+12px)] right-0 flex flex-col gap-2 rounded-2xl bg-slate-900 border border-slate-700 p-3 shadow-2xl w-[220px] animate-in slide-in-from-bottom-2 fade-in duration-200">
+              <button 
+                onClick={() => { setShowLeaveMenu(false); onEndMeeting(); }} 
+                className="w-full rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-rose-700 shadow-lg shadow-rose-600/20"
+              >
+                End meeting for all
+              </button>
+              <button 
+                onClick={() => { setShowLeaveMenu(false); onLeave(); }} 
+                className="w-full rounded-xl bg-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-slate-600"
+              >
+                Leave meeting
+              </button>
+              <button 
+                onClick={() => setShowLeaveMenu(false)} 
+                className="w-full rounded-xl bg-transparent px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-300 mt-1"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+          
+          <button 
+            onClick={() => isHost ? setShowLeaveMenu(!showLeaveMenu) : onLeave()} 
+            className="flex h-12 sm:h-14 items-center justify-center gap-2 rounded-[1.25rem] bg-rose-600 px-4 sm:px-6 font-semibold text-white transition hover:bg-rose-700 ml-1 sm:ml-2 shadow-lg shadow-rose-500/20 pointer-events-auto"
+          >
+            <PhoneOff size={20} />
+            <span className="hidden sm:inline">{isHost ? "End" : "Leave"}</span>
+          </button>
+        </div>
       </div>
 
       {/* Popovers attached to the root of MeetingControls */}

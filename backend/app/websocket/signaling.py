@@ -453,23 +453,6 @@ async def _leave(sid: str):
         return
     rooms.get(meeting_id, {}).pop(sid, None)
     
-    if user.is_host:
-        await sio.emit("meeting-ended", {"message": "The host has ended the meeting."}, room=meeting_id)
-        
-        def _sync_deactivate_meeting(code: str):
-            db = SessionLocal()
-            try:
-                m = db.query(Meeting).filter(Meeting.meeting_id == code).first()
-                if m:
-                    m.is_active = False
-                    m.ended_at = datetime.now(timezone.utc)
-                    db.commit()
-            except Exception:
-                db.rollback()
-            finally:
-                db.close()
-        await asyncio.to_thread(_sync_deactivate_meeting, meeting_id)
-    
     if meeting_id in rooms and not rooms[meeting_id]:
         del rooms[meeting_id]
         
