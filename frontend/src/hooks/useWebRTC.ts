@@ -91,8 +91,26 @@ export function useWebRTC(socket: Socket | null, meetingId: string, enabled: boo
     let cancelled = false;
     
     const constraints: MediaStreamConstraints = {
-      audio: joinConfig.audioDeviceId ? { deviceId: { exact: joinConfig.audioDeviceId } } : true,
-      video: joinConfig.videoDeviceId ? { deviceId: { exact: joinConfig.videoDeviceId } } : true,
+      audio: joinConfig.audioDeviceId ? { 
+        deviceId: { exact: joinConfig.audioDeviceId },
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      } : {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      },
+      video: joinConfig.videoDeviceId ? { 
+        deviceId: { exact: joinConfig.videoDeviceId },
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        frameRate: { ideal: 24, max: 30 }
+      } : {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        frameRate: { ideal: 24, max: 30 }
+      },
     };
 
     navigator.mediaDevices.getUserMedia(constraints)

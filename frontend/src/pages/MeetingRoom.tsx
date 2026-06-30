@@ -186,9 +186,7 @@ export function MeetingRoom() {
 
   const exit = () => { 
     if (localParticipant?.is_host) {
-      if (window.confirm("End meeting for all participants?")) {
-        socket?.emit("end-meeting", { meetingId });
-      }
+      socket?.emit("end-meeting", { meetingId });
     }
     leave(); 
     setShowThankYou(true);
