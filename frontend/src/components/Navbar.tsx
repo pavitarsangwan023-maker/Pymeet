@@ -88,15 +88,15 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-20 border-b border-line bg-white/75 dark:bg-ink/75 backdrop-blur-xl transition-colors">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 sm:gap-6">
           <Link to="/" className="flex items-center gap-2 text-slate-900 dark:text-white">
-            <img src="/logo.png" alt="Ardvmeetinghub" className="h-10 w-10 object-contain rounded-full shadow-sm bg-white" />
-            <span className="text-lg font-bold">Ardvmeetinghub</span>
+            <img src="/logo.png" alt="Ardvmeetinghub" className="h-10 w-10 object-contain rounded-full shadow-sm bg-white shrink-0" />
+            <span className="text-lg font-bold hidden sm:block">Ardvmeetinghub</span>
           </Link>
           {user && (
-            <Link to="/" className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors" title="Home">
+            <Link to="/" className="hidden md:flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors" title="Home">
               <div className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-white/10"><Home size={18} /></div>
-              <span className="text-sm font-medium hidden sm:block">Home</span>
+              <span className="text-sm font-medium">Home</span>
             </Link>
           )}
         </div>
