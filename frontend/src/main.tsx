@@ -1,3 +1,7 @@
+if (window.location.hostname === 'pymeet.vercel.app') {
+  window.location.replace('https://ardvmeetinghub.vercel.app' + window.location.pathname + window.location.search);
+}
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
