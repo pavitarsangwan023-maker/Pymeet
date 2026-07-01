@@ -113,6 +113,11 @@ export function useWebRTC(socket: Socket | null, meetingId: string, enabled: boo
       },
     };
 
+    if (!navigator.mediaDevices) {
+      socket.emit("join-room", { meetingId, micEnabled: false, cameraEnabled: false });
+      return () => { cancelled = true; };
+    }
+
     navigator.mediaDevices.getUserMedia(constraints)
       .then((stream) => {
         stream.getTracks().forEach(t => allTracksRef.current.add(t));
@@ -243,10 +248,14 @@ export function useWebRTC(socket: Socket | null, meetingId: string, enabled: boo
       }, 1500);
     };
 
-    navigator.mediaDevices.addEventListener("devicechange", handleDeviceChange);
+    if (navigator.mediaDevices) {
+      navigator.mediaDevices.addEventListener("devicechange", handleDeviceChange);
+    }
     return () => {
       clearTimeout(timeoutId);
-      navigator.mediaDevices.removeEventListener("devicechange", handleDeviceChange);
+      if (navigator.mediaDevices) {
+        navigator.mediaDevices.removeEventListener("devicechange", handleDeviceChange);
+      }
     };
   }, [micEnabled]);
 

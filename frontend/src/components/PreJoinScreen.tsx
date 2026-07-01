@@ -137,6 +137,7 @@ export function PreJoinScreen({ meetingTitle, isHost, onJoin }: PreJoinScreenPro
   }, [processedStream, stream]);
 
   const loadDevices = useCallback(async () => {
+    if (!navigator.mediaDevices) return;
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const audioInput = devices.filter((d) => d.kind === "audioinput");
@@ -167,6 +168,7 @@ export function PreJoinScreen({ meetingTitle, isHost, onJoin }: PreJoinScreenPro
   }, [selectedAudioId, selectedVideoId]);
 
   useEffect(() => {
+    if (!navigator.mediaDevices) return;
     navigator.mediaDevices.addEventListener("devicechange", loadDevices);
     return () => navigator.mediaDevices.removeEventListener("devicechange", loadDevices);
   }, [loadDevices]);
@@ -181,6 +183,11 @@ export function PreJoinScreen({ meetingTitle, isHost, onJoin }: PreJoinScreenPro
         stream.getTracks().forEach((t) => t.stop());
       }
       
+      if (!navigator.mediaDevices) {
+        console.error("No media devices available. This usually means you are accessing the site via HTTP instead of HTTPS.");
+        return;
+      }
+
       try {
         const constraints: MediaStreamConstraints = {
           audio: selectedAudioId ? { 

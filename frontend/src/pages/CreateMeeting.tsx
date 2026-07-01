@@ -7,8 +7,6 @@ import { Card } from "../components/Card";
 import { useAuth } from "../context/AuthContext";
 import { meetingApi } from "../services/api";
 
-const ALLOWED_EMAILS = ["amit.siss2024@gmail.com", "pavitarsangwan023@gmail.com"];
-
 export function CreateMeeting() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -25,12 +23,12 @@ export function CreateMeeting() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (user && !ALLOWED_EMAILS.includes(user.email)) {
+    if (!user) {
       navigate("/");
     }
   }, [user, navigate]);
 
-  if (!user || !ALLOWED_EMAILS.includes(user.email)) {
+  if (!user) {
     return null;
   }
   const submit = async (event: FormEvent) => {
