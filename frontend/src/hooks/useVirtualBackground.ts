@@ -22,7 +22,7 @@ export function useVirtualBackground(
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`,
       });
       segmentationRef.current.setOptions({
-        modelSelection: 1,
+        modelSelection: 0, // 0 is more accurate, 1 is faster
       });
       segmentationRef.current.initialize().catch(console.error);
     }
@@ -93,8 +93,10 @@ export function useVirtualBackground(
       ctx.save();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Draw segmentation mask
+      // Draw segmentation mask with slight blur to soften edges
+      ctx.filter = 'blur(3px)';
       ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+      ctx.filter = 'none';
       
       // Draw person (only where mask is white)
       ctx.globalCompositeOperation = "source-in";
