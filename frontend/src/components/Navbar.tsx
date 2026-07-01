@@ -90,9 +90,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         <div className="flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2 text-slate-900 dark:text-white">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-cyan-400 text-slate-950">
-              <Video size={20} />
-            </span>
+            <img src="/logo.png" alt="Ardvmeetinghub" className="h-10 w-10 object-contain rounded-full shadow-sm bg-white" />
             <span className="text-lg font-bold">Ardvmeetinghub</span>
           </Link>
           {user && (
