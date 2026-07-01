@@ -58,7 +58,7 @@ export function Login() {
   return (
     <main className="bg-premium grid min-h-screen grid-cols-1 text-slate-900 dark:text-white transition-colors lg:grid-cols-[1.1fr_0.9fr]">
       <section className="flex flex-col justify-between p-6 lg:p-12">
-        <div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-lg bg-cyan-400 text-slate-950"><Video size={24} /></span><span className="text-2xl font-extrabold">Ardvmeetinghub</span></div>
+        <div className="flex items-center gap-3"><img src="/logo.png" alt="Ardvmeetinghub" className="h-12 w-12 object-contain rounded-full bg-white shadow-sm" /><span className="text-2xl font-extrabold">Ardvmeetinghub</span></div>
         <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} className="my-16 max-w-2xl">
           <h1 className="text-4xl font-extrabold leading-tight sm:text-6xl text-slate-900 dark:text-white">Premium meetings for teams that move fast.</h1>
           <p className="mt-5 max-w-xl text-lg text-slate-600 dark:text-slate-300">Launch secure video rooms, collaborate in real time, and keep every conversation close to the work.</p>
